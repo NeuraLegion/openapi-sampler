@@ -1,6 +1,9 @@
 'use strict';
 
 import { ensureMinLength, toRFCDateTime } from '../utils';
+import faker from 'faker';
+import fs from 'fs';
+import randexp from 'randexp';
 
 const passwordSymbols = 'qwerty!@#$%^123456';
 
@@ -60,6 +63,22 @@ function uriSample() {
   return 'http://example.com';
 }
 
+function byteSample() {
+  return 'U3dhZ2dlciByb2Nrcw==';
+}
+
+function binarySample() {
+  return fs.readFileSync('./string.js', 'utf8');
+}
+
+function uuidSample() {
+  return faker.random.uuid();
+}
+
+function patternSample(pattern) {
+  return new randexp(pattern).gen();
+}
+
 const stringFormats = {
   'email': emailSample,
   'password': passwordSample,
@@ -69,11 +88,15 @@ const stringFormats = {
   'ipv6': ipv6Sample,
   'hostname': hostnameSample,
   'uri': uriSample,
+  'byte': byteSample,
+  'binary': binarySample,
+  'uuid': uuidSample,
+  'pattern': patternSample,
   'default': defaultSample
 };
 
 export function sampleString(schema) {
-  let format = schema.format || 'default';
+  let format = schema.pattern !== undefined ? schema.pattern : schema.format || 'default';
   let sampler = stringFormats[format] || defaultSample;
   return sampler(schema.minLength | 0, schema.maxLength);
 }
