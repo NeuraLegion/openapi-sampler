@@ -64,11 +64,11 @@ function uriSample() {
 }
 
 function byteSample() {
-  return 'U3dhZ2dlciByb2Nrcw==';
+  return Buffer.from('Hello Mock').toString('base64');
 }
 
 function binarySample() {
-  return fs.readFileSync('./string.js', 'utf8');
+  return Buffer.from(faker.lorem.word());
 }
 
 function uuidSample() {
@@ -96,7 +96,11 @@ const stringFormats = {
 };
 
 export function sampleString(schema) {
-  let format = schema.pattern !== undefined ? schema.pattern : schema.format || 'default';
-  let sampler = stringFormats[format] || defaultSample;
-  return sampler(schema.minLength | 0, schema.maxLength);
+  if (schema.pattern !== undefined) {
+    return stringFormats['pattern'](schema.pattern);
+  } else {
+    let format = schema.format || 'default';
+    let sampler = stringFormats[format] || defaultSample;
+    return sampler(schema.minLength | 0, schema.maxLength);
+  }
 }
