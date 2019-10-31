@@ -26,6 +26,12 @@ node_modules
 bower_components
 coverage
 tmp
+gulp-tasks
+test
 
 # Users Environment Variables
 .lock-wscript
+.github
+
+commitlint.config.js
+release.config.js
