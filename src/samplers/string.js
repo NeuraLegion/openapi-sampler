@@ -2,7 +2,6 @@
 
 import { ensureMinLength, toRFCDateTime } from '../utils';
 import faker from 'faker';
-import fs from 'fs';
 import randexp from 'randexp';
 
 const passwordSymbols = 'qwerty!@#$%^123456';
