@@ -1,6 +1,6 @@
 'use strict';
 
-import { ensureMinLength, toRFCDateTime } from '../utils';
+import {ensureMinLength, isBlank, toRFCDateTime} from '../utils';
 import faker from 'faker';
 import randexp from 'randexp';
 
@@ -105,7 +105,7 @@ const stringFormats = {
 };
 
 export function sampleString(schema) {
-    let format = schema.pattern !== undefined ? 'pattern' : schema.format || 'default';
+    let format = !isBlank(schema.pattern) ? 'pattern' : schema.format || 'default';
     let sampler = stringFormats[format] || defaultSample;
     return sampler(schema.minLength | 0, schema.maxLength, schema.pattern);
 }

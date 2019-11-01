@@ -100,4 +100,10 @@ describe('sampleString', () => {
     const buffered = Buffer.from(res, 'base64');
     expect(Buffer.isBuffer(buffered)).to.be.equal(true);
   });
+
+  it('should return valid email', () => {
+    res = sampleString({format: 'email', pattern: null});
+    expect(res).to.match(EMAIL_REGEXP);
+  });
+
 });
