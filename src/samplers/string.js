@@ -105,7 +105,7 @@ const stringFormats = {
 };
 
 export function sampleString(schema) {
-    let format = !isBlank(schema.pattern) ? 'pattern' : schema.format || 'default';
+    let format = schema.pattern ? 'pattern' : schema.format || 'default';
     let sampler = stringFormats[format] || defaultSample;
     return sampler(schema.minLength | 0, schema.maxLength, schema.pattern);
 }
