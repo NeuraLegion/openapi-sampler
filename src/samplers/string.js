@@ -7,11 +7,11 @@ import randexp from 'randexp';
 const passwordSymbols = 'qwerty!@#$%^123456';
 
 function emailSample() {
-  return 'user@example.com';
+  return faker.internet.email().toLowerCase();
 }
 
 function passwordSample(min, max) {
-  let res = 'pa$$word';
+  let res = faker.internet.password();
   if (min > res.length) {
     res += '_';
     res += ensureMinLength(passwordSymbols, min - res.length).substring(0, min - res.length);
@@ -39,7 +39,7 @@ function dateSample(min, max) {
 }
 
 function defaultSample(min, max) {
-  let res = ensureMinLength('string', min);
+  let res = ensureMinLength(faker.lorem.word(), min);
   if (max && res.length > max) {
     res = res.substring(0, max);
   }
@@ -47,23 +47,23 @@ function defaultSample(min, max) {
 }
 
 function ipv4Sample() {
-  return '192.168.0.1';
+  return faker.internet.ip();
 }
 
 function ipv6Sample() {
-  return '2001:0db8:85a3:0000:0000:8a2e:0370:7334';
+  return faker.internet.ipv6();
 }
 
 function hostnameSample() {
-  return 'example.com';
+  return faker.internet.domainName();
 }
 
 function uriSample() {
-  return 'http://example.com';
+  return faker.internet.url();
 }
 
 function byteSample() {
-  return Buffer.from('Hello Mock').toString('base64');
+  return Buffer.from(faker.lorem.word()).toString('base64');
 }
 
 function binarySample() {
@@ -74,8 +74,18 @@ function uuidSample() {
   return faker.random.uuid();
 }
 
-function patternSample(pattern) {
-  return new randexp(pattern).gen();
+function patternSample(min, max, pattern) {
+  let res = new randexp(pattern).gen();
+
+  if (res.length < min) {
+    throw new Error(`Using minLength = ${min} is incorrect with pattern ${pattern}`);
+  }
+
+  if (max && res.length > max) {
+    throw new Error(`Using maxLength = ${max} is incorrect with pattern ${pattern}`);
+  }
+
+  return res;
 }
 
 const stringFormats = {
@@ -95,11 +105,7 @@ const stringFormats = {
 };
 
 export function sampleString(schema) {
-  if (schema.pattern !== undefined) {
-    return stringFormats['pattern'](schema.pattern);
-  } else {
-    let format = schema.format || 'default';
+    let format = schema.pattern !== undefined ? 'pattern' : schema.format || 'default';
     let sampler = stringFormats[format] || defaultSample;
-    return sampler(schema.minLength | 0, schema.maxLength);
-  }
+    return sampler(schema.minLength | 0, schema.maxLength, schema.pattern);
 }
