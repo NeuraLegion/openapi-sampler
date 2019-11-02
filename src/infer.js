@@ -1,3 +1,5 @@
+'use strict';
+
 const schemaKeywordTypes = {
   multipleOf: 'number',
   maximum: 'number',
@@ -25,14 +27,17 @@ const schemaKeywordTypes = {
 };
 
 export function inferType(schema) {
-  if (schema.type !== undefined) {
+  if (schema.type) {
     return schema.type;
   }
+
   const keywords = Object.keys(schemaKeywordTypes);
-  for (var i = 0; i < keywords.length; i++) {
-    let keyword = keywords[i];
-    let type = schemaKeywordTypes[keyword];
-    if (schema[keyword] !== undefined) {
+
+  for (let i = 0; i < keywords.length; i++) {
+    const keyword = keywords[i];
+    const type = schemaKeywordTypes[keyword];
+
+    if (schema[keyword]) {
       return type;
     }
   }

@@ -1,6 +1,6 @@
 {
   "name": "@neuralegion/openapi-sampler",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": false,
   "description": "Tool for generation samples based on OpenAPI payload/response schema",
   "main": "dist/openapi-sampler.js",
@@ -20,6 +20,9 @@
     "type": "git",
     "url": "git+https://github.com/Neuralegion/openapi-sampler.git"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
     "OpenAPI",
     "Swagger",
@@ -27,7 +30,10 @@
     "sampler",
     "faker"
   ],
-  "author": "Mirsad Halilcevic <miki.halilcevic@gmail.com>",
+  "contributors": [
+    "Mirsad Halilcevic <miki.halilcevic@gmail.com>",
+    "Artem Derevnjuk <artem.derevnjuk@neuralegion.com>"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Neuralegion/openapi-sampler/issues"
@@ -40,6 +46,7 @@
     "@babel/register": "^7.4.4",
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0",
+    "@semantic-release/git": "^7.0.17",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
     "babel-plugin-istanbul": "^5.1.4",
@@ -98,7 +105,7 @@
     }
   },
   "lint-staged": {
-    "*.js": [
+    "src/**/*.js": [
       "eslint --fix",
       "git add"
     ]

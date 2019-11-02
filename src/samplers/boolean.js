@@ -1,3 +1,5 @@
+import faker from 'faker'
+
 export function sampleBoolean(schema) {
-  return true; // let be optimistic :)
+  return faker.random.boolean();
 }

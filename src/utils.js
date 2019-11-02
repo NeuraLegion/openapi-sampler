@@ -19,13 +19,15 @@ export function toRFCDateTime(date, omitTime, milliseconds) {
     'Z';
   }
   return res;
-};
+}
 
-export function ensureMinLength(sample, min) {
-  if (min > sample.length) {
+export function ensureLength(sample, min, max) {
+  const minLength = min ? min : 0;
+  const maxLength = max ? max : sample.length;
+  if (minLength > sample.length) {
     return sample.repeat(Math.trunc(min / sample.length) + 1).substring(0, min);
   }
-  return sample;
+  return sample.substr(0, Math.min(Math.max(sample.length, minLength), maxLength));
 }
 
 export function mergeDeep(...objects) {

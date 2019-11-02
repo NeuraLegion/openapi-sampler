@@ -1,3 +1,5 @@
+'use strict';
+
 import { _samplers } from './openapi-sampler';
 import { allOfSample } from './allOf';
 import { inferType } from './infer';
@@ -14,7 +16,9 @@ export function traverse(schema, options, spec) {
     if (!spec) {
       throw new Error('Your schema contains $ref. You must provide specification in the third parameter.');
     }
+
     let ref = decodeURIComponent(schema.$ref);
+
     if (ref.startsWith('#')) {
       ref = ref.substring(1);
     }
@@ -23,12 +27,13 @@ export function traverse(schema, options, spec) {
 
     let result;
 
-    if ($refCache[ref] !== true) {
+    if (!$refCache[ref]) {
       $refCache[ref] = true;
       result = traverse(referenced, options, spec);
       $refCache[ref] = false;
     } else {
       const referencedType = inferType(referenced);
+
       result = {
         value: referencedType === 'object' ?
             {}
@@ -48,7 +53,7 @@ export function traverse(schema, options, spec) {
     };
   }
 
-  if (schema.allOf !== undefined) {
+  if (schema.allOf) {
     return allOfSample(
       { ...schema, allOf: undefined },
       schema.allOf,
@@ -58,9 +63,10 @@ export function traverse(schema, options, spec) {
   }
 
   if (schema.oneOf && schema.oneOf.length) {
-    if (schema.anyOf) {
-      if (!options.quiet) console.warn('oneOf and anyOf are not supported on the same level. Skipping anyOf');
+    if (schema.anyOf && !options.quiet) {
+      console.warn('oneOf and anyOf are not supported on the same level. Skipping anyOf');
     }
+
     return traverse(schema.oneOf[0], options, spec);
   }
 
@@ -68,22 +74,26 @@ export function traverse(schema, options, spec) {
     return traverse(schema.anyOf[0], options, spec);
   }
 
-  let example = null;
-  let type = null;
+  let example;
+  let type;
+
   if (schema.default !== undefined) {
     example = schema.default;
   } else if (schema.const !== undefined) {
     example = schema.const;
-  } else if (schema.enum !== undefined && schema.enum.length) {
+  } else if (schema.enum && schema.enum.length) {
     example = schema.enum[0];
-  } else if (schema.examples !== undefined && schema.examples.length) {
+  } else if (schema.examples && schema.examples.length) {
     example = schema.examples[0];
   } else {
     type = schema.type;
+
     if (!type) {
       type = inferType(schema);
     }
-    let sampler = _samplers[type];
+
+    const sampler = _samplers[type];
+
     if (sampler) {
       example = sampler(schema, options, spec);
     }

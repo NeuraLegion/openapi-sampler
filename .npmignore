@@ -35,3 +35,4 @@ test
 
 commitlint.config.js
 release.config.js
+.idea

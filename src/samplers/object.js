@@ -1,9 +1,11 @@
 import { traverse } from '../traverse';
+
 export function sampleObject(schema, options = {}, spec) {
   let res = {};
+
   if (schema && typeof schema.properties === 'object') {
-    let requiredKeys = (Array.isArray(schema.required) ? schema.required : []);
-    let requiredKeyDict = requiredKeys.reduce((dict, key) => {
+    const requiredKeys = (Array.isArray(schema.required) ? schema.required : []);
+    const requiredKeyDict = requiredKeys.reduce((dict, key) => {
       dict[key] = true;
       return dict;
     }, {});
