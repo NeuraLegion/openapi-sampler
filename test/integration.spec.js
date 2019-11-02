@@ -13,7 +13,7 @@ describe('Integration', function() {
       };
       result = OpenAPISampler.sample(schema);
       expected = 'string';
-      expect(result).to.deep.equal(expected);
+      expect(typeof result).to.deep.equal(expected);
     });
 
     it('should sample number', function() {
@@ -21,8 +21,8 @@ describe('Integration', function() {
         'type': 'number'
       };
       result = OpenAPISampler.sample(schema);
-      expected = 0;
-      expect(result).to.deep.equal(expected);
+      expected = 'number';
+      expect(typeof result).to.deep.equal(expected);
     });
 
     it('should sample boolean', function() {
@@ -73,10 +73,7 @@ describe('Integration', function() {
         }
       };
       result = OpenAPISampler.sample(schema);
-      expected = {
-        'title': 'string'
-      };
-      expect(result).to.deep.equal(expected);
+      expect(typeof result.title).to.deep.equal('string');
     });
 
     it('should sample object with property with default value', function() {
@@ -132,11 +129,12 @@ describe('Integration', function() {
       };
       result = OpenAPISampler.sample(schema);
       expected = {
-        test: 'string',
         property1: 0,
         property2: 0
       };
-      expect(result).to.deep.equal(expected);
+      expect(typeof result.test).to.equal('string');
+      expect(typeof result.property1).to.equal('number');
+      expect(typeof result.property2).to.equal('number');
     });
   });
 
@@ -148,7 +146,8 @@ describe('Integration', function() {
             'type': 'object',
             'properties': {
               'title': {
-                'type': 'string'
+                'type': 'string',
+                'default': 'string'
               }
             }
           },
@@ -232,7 +231,7 @@ describe('Integration', function() {
         ]
       };
       const result = OpenAPISampler.sample(schema);
-      expect(result).to.deep.equal(expected);
+      expect(Array.isArray(result.arr)).to.equal(true);
     });
 
     it('should not be confused by subschema without type', function() {
@@ -246,7 +245,7 @@ describe('Integration', function() {
       };
       result = OpenAPISampler.sample(schema);
       expected = 'string';
-      expect(result).to.equal(expected);
+      expect(typeof result).to.equal(expected);
     });
 
     it('should not throw for array allOf', function() {
@@ -269,7 +268,8 @@ describe('Integration', function() {
       schema = {
         'properties': {
           'title': {
-            'type': 'string'
+            'type': 'string',
+            'default': 'string'
           }
         },
         'allOf': [
@@ -295,7 +295,8 @@ describe('Integration', function() {
         'type': 'object',
         'properties': {
           'title': {
-            'type': 'string'
+            'type': 'string',
+            'default': 'string'
           }
         },
         'allOf': [
@@ -310,11 +311,8 @@ describe('Integration', function() {
         ]
       };
       result = OpenAPISampler.sample(schema);
-      expected = {
-        'title': 'string',
-        'amount': 1
-      };
-      expect(result).to.deep.equal(expected);
+      expect(typeof result.title).to.equal('string');
+      expect(result.amount).to.equal(1);
     });
 
     it('should merge deep properties', function() {
@@ -350,16 +348,10 @@ describe('Integration', function() {
         ]
       };
 
-      expected = {
-        parent: {
-          child1: 'string',
-          child2: 0
-        }
-      };
-
       result = OpenAPISampler.sample(schema);
 
-      expect(result).to.deep.equal(expected);
+      expect(typeof  result.parent.child1).to.equal('string');
+      expect(typeof result.parent.child2).to.equal('number');
     });
   });
 
@@ -416,11 +408,8 @@ describe('Integration', function() {
         }
       };
       result = OpenAPISampler.sample(schema);
-      expected = {
-        a: 10,
-        b: 'string'
-      };
-      expect(result).to.deep.equal(expected);
+      expect(result.a).to.deep.equal(10);
+      expect(typeof result.b).to.equal('string');
     });
   });
 
@@ -438,7 +427,7 @@ describe('Integration', function() {
       };
       result = OpenAPISampler.sample(schema);
       expected = 'string';
-      expect(result).to.equal(expected);
+      expect(typeof result).to.equal(expected);
     });
 
     it('should support anyOf', function() {
@@ -454,7 +443,7 @@ describe('Integration', function() {
       };
       result = OpenAPISampler.sample(schema);
       expected = 'string';
-      expect(result).to.equal(expected);
+      expect(typeof result).to.equal(expected);
     });
 
     it('should prefer oneOf if anyOf and oneOf are on the same level ', function() {
@@ -471,8 +460,7 @@ describe('Integration', function() {
         ]
       };
       result = OpenAPISampler.sample(schema);
-      expected = 0;
-      expect(result).to.equal(expected);
+      expect(typeof result).to.equal('number');
     });
   });
 
@@ -494,10 +482,7 @@ describe('Integration', function() {
         }
       };
       result = OpenAPISampler.sample(schema, {}, spec);
-      expected = {
-        a: 'string'
-      };
-      expect(result).to.deep.equal(expected);
+      expect(typeof result.a).to.equal('string');
     });
 
     it('should not follow circular $ref', function() {
@@ -523,11 +508,8 @@ describe('Integration', function() {
         }
       };
       result = OpenAPISampler.sample(schema, {}, spec);
-      expected = {
-        a: 'string',
-        b: {}
-      };
-      expect(result).to.deep.equal(expected);
+      expect(result.b).to.deep.equal({});
+      expect(typeof result.a).to.equal('string');
     });
 
     it('should not follow circular $ref if more than one in properties', function() {
@@ -591,12 +573,8 @@ describe('Integration', function() {
         }
       };
 
-      expected = {
-        b: 'string'
-      };
-
       result = OpenAPISampler.sample(schema, {skipReadOnly: true}, spec);
-      expect(result).to.deep.equal(expected);
+      expect(typeof result.b).to.deep.equal('string');
     });
   });
 });
