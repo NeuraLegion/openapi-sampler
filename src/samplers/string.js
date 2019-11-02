@@ -1,32 +1,28 @@
 'use strict';
 
-import {ensureMinLength, isBlank, toRFCDateTime} from '../utils';
+import {ensureLength, toRFCDateTime} from '../utils';
 import faker from 'faker';
 import randexp from 'randexp';
-
-const passwordSymbols = 'qwerty!@#$%^123456';
 
 function emailSample() {
   return faker.internet.email().toLowerCase();
 }
 
 function passwordSample(min, max) {
-  let res = faker.internet.password();
-  if (min > res.length) {
-    res += '_';
-    res += ensureMinLength(passwordSymbols, min - res.length).substring(0, min - res.length);
-  }
-  return res;
+  return ensureLength(faker.internet.password(), min, max);
 }
 
 function commonDateTimeSample(min, max, omitTime) {
-  let res = toRFCDateTime(new Date(), omitTime, false);
+  const res = toRFCDateTime(new Date(), omitTime, false);
+
   if (res.length < min) {
     throw new Error(`Using minLength = ${min} is incorrect with format "date-time"`);
   }
+
   if (max && res.length > max) {
     throw new Error(`Using maxLength = ${max} is incorrect with format "date-time"`);
   }
+
   return res;
 }
 
@@ -39,11 +35,7 @@ function dateSample(min, max) {
 }
 
 function defaultSample(min, max) {
-  let res = ensureMinLength(faker.lorem.word(), min);
-  if (max && res.length > max) {
-    res = res.substring(0, max);
-  }
-  return res;
+  return ensureLength(faker.lorem.word(), min, max);
 }
 
 function ipv4Sample() {
@@ -75,7 +67,7 @@ function uuidSample() {
 }
 
 function patternSample(min, max, pattern) {
-  let res = new randexp(pattern).gen();
+  const res = new randexp(pattern).gen();
 
   if (res.length < min) {
     throw new Error(`Using minLength = ${min} is incorrect with pattern ${pattern}`);
@@ -105,7 +97,7 @@ const stringFormats = {
 };
 
 export function sampleString(schema) {
-    let format = schema.pattern ? 'pattern' : schema.format || 'default';
-    let sampler = stringFormats[format] || defaultSample;
-    return sampler(schema.minLength | 0, schema.maxLength, schema.pattern);
+  const format = schema.pattern ? 'pattern' : schema.format || 'default';
+  const sampler = stringFormats[format] || defaultSample;
+  return sampler(schema.minLength | 0, schema.maxLength, schema.pattern);
 }

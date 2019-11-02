@@ -23,9 +23,9 @@ module.exports = {
       }
     ],
     [
-      '@semantic-release/github',
-      {
-        assets: ['dist/**']
+      '@semantic-release/git', {
+        assets: ['dist/**', 'src/**', 'package.json', 'package-lock.json', 'README.md'],
+        message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}'
       }
     ]
   ],
