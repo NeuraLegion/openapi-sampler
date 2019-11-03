@@ -21,10 +21,16 @@ module.exports = {
     ],
     '@semantic-release/npm',
     [
-      '@semantic-release/git', {
-        assets: ['dist/**', 'src/**', 'package.json', 'package-lock.json', 'README.md'],
-        message: 'chore(release): ${nextRelease.version} [skip ci]'
+      '@semantic-release/github',
+      {
+        assets: ['dist/**', 'src/**', 'package.json', 'package-lock.json', 'README.md']
       }
+    ],
+    [
+      '@semantic-release/git', {
+      assets: ['src/**', 'package.json', 'package-lock.json'],
+      message: 'chore(release): ${nextRelease.version} [skip ci]'
+    }
     ]
   ],
   branch: 'master',
