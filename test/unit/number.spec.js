@@ -2,14 +2,10 @@ import { sampleNumber } from '../../src/samplers/number.js';
 
 describe('sampleNumber', () => {
   let res;
-  it('should return 0 by default', () => {
-    res = sampleNumber({});
-    expect(res).to.equal(0);
-  });
 
-  it('should return 0 by default', () => {
+  it('should return any number by default', () => {
     res = sampleNumber({});
-    expect(res).to.equal(0);
+    expect(typeof res).to.equal('number');
   });
 
   it('should return minimum if minimum is specified', () => {

@@ -7,6 +7,8 @@ function pad(number) {
   return number;
 }
 
+const isObject = obj => obj && typeof obj === 'object';
+
 export function toRFCDateTime(date, omitTime, milliseconds) {
   var res = date.getUTCFullYear() +
     '-' + pad(date.getUTCMonth() + 1) +
@@ -31,7 +33,6 @@ export function ensureLength(sample, min, max) {
 }
 
 export function mergeDeep(...objects) {
-  const isObject = obj => obj && typeof obj === 'object';
 
   return objects.reduce((prev, obj) => {
     Object.keys(obj).forEach(key => {
@@ -47,4 +48,25 @@ export function mergeDeep(...objects) {
 
     return prev;
   }, Array.isArray(objects[objects.length - 1]) ? [] : {});
+}
+
+export function nestedTypeLookup(schema) {
+  if(!isObject(schema))
+    return null;
+
+  let type = null;
+  for(let key in schema) {
+    if (!schema.hasOwnProperty(key)) {
+      continue;
+    }
+
+    if (key === 'type') {
+      type = schema[key];
+    }
+
+    if (isObject(schema[key])) {
+      type = nestedTypeLookup(schema[key]);
+    }
+  }
+  return type;
 }

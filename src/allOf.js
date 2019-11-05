@@ -1,11 +1,10 @@
 'use strict';
 
 import { traverse } from './traverse';
-import { mergeDeep } from './utils';
+import {mergeDeep, nestedTypeLookup} from './utils';
 
 export function allOfSample(into, children, options, spec) {
   const res = traverse(into, options, spec);
-
   const subSamples = [];
 
   for (let subSchema of children) {
@@ -27,14 +26,21 @@ export function allOfSample(into, children, options, spec) {
   if (res.type === 'object') {
     res.value = mergeDeep(res.value || {}, ...subSamples);
   } else {
-    // TODO: implement arrays
-    if (res.type === 'array' && !options.quiet) {
-      console.warn('OpenAPI Sampler: found allOf with "array" type. Result may be incorrect');
+    if (res.type === 'array' ) {
+
+      if (!options.quiet) {
+        console.warn('OpenAPI Sampler: found allOf with "array" type. Result may be incorrect');
+      }
+
+      const arraySchema = mergeDeep(...children);
+      if (!arraySchema.items) {
+        arraySchema.items = {type: nestedTypeLookup(arraySchema)};
+      }
+      res.value = traverse(arraySchema, options, spec).value;
+    } else {
+      const lastSample = subSamples[subSamples.length - 1];
+      res.value = lastSample != null ? lastSample : res.value;
     }
-
-    const lastSample = subSamples[subSamples.length - 1];
-    res.value = lastSample != null ? lastSample : res.value;
   }
-
   return res;
 }

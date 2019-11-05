@@ -1,3 +1,5 @@
+const faker = require('faker');
+
 export function sampleNumber(schema) {
   let res;
 
@@ -25,5 +27,5 @@ export function sampleNumber(schema) {
     }
   }
 
-  return 0;
+  return faker.random.number();
 }

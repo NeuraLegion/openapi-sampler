@@ -234,6 +234,50 @@ describe('Integration', function() {
       expect(Array.isArray(result.arr)).to.equal(true);
     });
 
+    it('allOf array of at least two numbers', function() {
+      schema = {
+        allOf: [
+          {
+            'type': 'array',
+            'contains': {
+              'type': 'number'
+            }
+          },
+          {
+            'minItems': 2,
+            'maxItems': 3
+          }
+        ]
+      };
+
+      const result = OpenAPISampler.sample(schema);
+      expect(Array.isArray(result)).to.be.equal(true);
+      expect(result.length).to.be.equal(2);
+    });
+
+    it('allOf array of 5 unique values', function() {
+      schema = {
+        allOf: [
+          {
+            'type': 'array',
+            'items': {
+              'type': 'number',
+            }
+          },
+          {
+            'minItems': 5,
+            'uniqueItems': true,
+          }
+        ]
+      };
+      const result = OpenAPISampler.sample(schema);
+      console.log(result);
+      expect(
+        new Set(result).size
+      ).to.be.equal(result.length);
+
+    });
+
     it('should not be confused by subschema without type', function() {
       schema = {
         'type': 'string',
