@@ -11,7 +11,7 @@ export function allOfSample(into, children, options, spec) {
     const { type, readOnly, writeOnly, value } = traverse({ type, ...subSchema }, options, spec);
 
     if (res.type && type && type !== res.type) {
-      throw new Error('allOf: schemas with different types can\'t be merged');
+      throw new Error(`allOf: schemas with different types can't be merged`);
     }
 
     res.type = res.type || type;
@@ -23,24 +23,24 @@ export function allOfSample(into, children, options, spec) {
     }
   }
 
-  if (res.type === 'object') {
-    res.value = mergeDeep(res.value || {}, ...subSamples);
-  } else {
-    if (res.type === 'array' ) {
+  switch (res.type) {
+    case 'object':
+      res.value = mergeDeep(res.value || {}, ...subSamples);
+      break;
 
+    case 'array':
       if (!options.quiet) {
         console.warn('OpenAPI Sampler: found allOf with "array" type. Result may be incorrect');
       }
-
       const arraySchema = mergeDeep(...children);
-      if (!arraySchema.items) {
-        arraySchema.items = {type: nestedTypeLookup(arraySchema)};
-      }
       res.value = traverse(arraySchema, options, spec).value;
-    } else {
+      break;
+
+    default:
       const lastSample = subSamples[subSamples.length - 1];
       res.value = lastSample != null ? lastSample : res.value;
-    }
+
   }
+
   return res;
 }

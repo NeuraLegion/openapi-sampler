@@ -49,24 +49,3 @@ export function mergeDeep(...objects) {
     return prev;
   }, Array.isArray(objects[objects.length - 1]) ? [] : {});
 }
-
-export function nestedTypeLookup(schema) {
-  if(!isObject(schema))
-    return null;
-
-  let type = null;
-  for(let key in schema) {
-    if (!schema.hasOwnProperty(key)) {
-      continue;
-    }
-
-    if (key === 'type') {
-      type = schema[key];
-    }
-
-    if (isObject(schema[key])) {
-      type = nestedTypeLookup(schema[key]);
-    }
-  }
-  return type;
-}

@@ -1,13 +1,13 @@
 'use strict';
 
-describe('Integration', function() {
+describe('Integration', function () {
   var schema;
   var result;
   var expected;
 
-  describe('Primitives', function() {
+  describe('Primitives', function () {
 
-    it('should sample string', function() {
+    it('should sample string', function () {
       schema = {
         'type': 'string'
       };
@@ -16,7 +16,7 @@ describe('Integration', function() {
       expect(typeof result).to.deep.equal(expected);
     });
 
-    it('should sample number', function() {
+    it('should sample number', function () {
       schema = {
         'type': 'number'
       };
@@ -25,7 +25,7 @@ describe('Integration', function() {
       expect(typeof result).to.deep.equal(expected);
     });
 
-    it('should sample boolean', function() {
+    it('should sample boolean', function () {
       schema = {
         'type': 'boolean'
       };
@@ -34,7 +34,7 @@ describe('Integration', function() {
       expect(typeof result).to.deep.equal('boolean');
     });
 
-    it('should use default property', function() {
+    it('should use default property', function () {
       schema = {
         'type': 'number',
         'default': 100
@@ -44,17 +44,16 @@ describe('Integration', function() {
       expect(result).to.deep.equal(expected);
     });
 
-    it('should use null if type is not specified', function() {
-      schema = {
-      };
+    it('should use null if type is not specified', function () {
+      schema = {};
       result = OpenAPISampler.sample(schema);
       expected = null;
       expect(result).to.deep.equal(expected);
     });
   });
 
-  describe('Objects', function() {
-    it('should sample object without properties', function() {
+  describe('Objects', function () {
+    it('should sample object without properties', function () {
       schema = {
         'type': 'object'
       };
@@ -63,7 +62,7 @@ describe('Integration', function() {
       expect(result).to.deep.equal(expected);
     });
 
-    it('should sample object with property', function() {
+    it('should sample object with property', function () {
       schema = {
         'type': 'object',
         'properties': {
@@ -76,7 +75,7 @@ describe('Integration', function() {
       expect(typeof result.title).to.deep.equal('string');
     });
 
-    it('should sample object with property with default value', function() {
+    it('should sample object with property with default value', function () {
       schema = {
         'type': 'object',
         'properties': {
@@ -93,7 +92,7 @@ describe('Integration', function() {
       expect(result).to.deep.equal(expected);
     });
 
-    it('should sample object with more than one property', function() {
+    it('should sample object with more than one property', function () {
       schema = {
         'type': 'object',
         'properties': {
@@ -115,7 +114,7 @@ describe('Integration', function() {
       expect(result).to.deep.equal(expected);
     });
 
-    it('should sample both properties and additionalProperties', function() {
+    it('should sample both properties and additionalProperties', function () {
       schema = {
         type: 'object',
         properties: {
@@ -138,8 +137,8 @@ describe('Integration', function() {
     });
   });
 
-  describe('AllOf', function() {
-    it('should sample schema with allOf', function() {
+  describe('AllOf', function () {
+    it('should sample schema with allOf', function () {
       schema = {
         'allOf': [
           {
@@ -170,7 +169,7 @@ describe('Integration', function() {
       expect(result).to.deep.equal(expected);
     });
 
-    it('should throw for schemas with allOf with different types', function() {
+    it('should throw for schemas with allOf with different types', function () {
       schema = {
         'allOf': [
           {
@@ -190,7 +189,7 @@ describe('Integration', function() {
       expect(() => OpenAPISampler.sample(schema)).to.throw();
     });
 
-    it('deep array', function() {
+    it('deep array', function () {
       schema = {
         'allOf': [
           {
@@ -234,12 +233,12 @@ describe('Integration', function() {
       expect(Array.isArray(result.arr)).to.equal(true);
     });
 
-    it('allOf array of at least two numbers', function() {
+    it('should return array of at least two numbers after allOf merge', function () {
       schema = {
         allOf: [
           {
             'type': 'array',
-            'contains': {
+            'items': {
               'type': 'number'
             }
           },
@@ -255,30 +254,7 @@ describe('Integration', function() {
       expect(result.length).to.be.equal(2);
     });
 
-    it('allOf array of 5 unique values', function() {
-      schema = {
-        allOf: [
-          {
-            'type': 'array',
-            'items': {
-              'type': 'number',
-            }
-          },
-          {
-            'minItems': 5,
-            'uniqueItems': true,
-          }
-        ]
-      };
-      const result = OpenAPISampler.sample(schema);
-      console.log(result);
-      expect(
-        new Set(result).size
-      ).to.be.equal(result.length);
-
-    });
-
-    it('should not be confused by subschema without type', function() {
+    it('should not be confused by subschema without type', function () {
       schema = {
         'type': 'string',
         'allOf': [
@@ -292,7 +268,7 @@ describe('Integration', function() {
       expect(typeof result).to.equal(expected);
     });
 
-    it('should not throw for array allOf', function() {
+    it('should not throw for array allOf', function () {
       schema = {
         'type': 'array',
         'allOf': [
@@ -308,7 +284,7 @@ describe('Integration', function() {
       expect(result).to.be.an('array');
     });
 
-    it('should sample schema with allOf even if some type is not specified', function() {
+    it('should sample schema with allOf even if some type is not specified', function () {
       schema = {
         'properties': {
           'title': {
@@ -359,7 +335,7 @@ describe('Integration', function() {
       expect(result.amount).to.equal(1);
     });
 
-    it('should merge deep properties', function() {
+    it('should merge deep properties', function () {
       schema = {
         'type': 'object',
         'allOf': [
@@ -394,13 +370,13 @@ describe('Integration', function() {
 
       result = OpenAPISampler.sample(schema);
 
-      expect(typeof  result.parent.child1).to.equal('string');
+      expect(typeof result.parent.child1).to.equal('string');
       expect(typeof result.parent.child2).to.equal('number');
     });
   });
 
-  describe('Example', function() {
-    it('should use example', function() {
+  describe('Example', function () {
+    it('should use example', function () {
       var obj = {
         test: 'test',
         properties: {
@@ -418,7 +394,7 @@ describe('Integration', function() {
       expect(result).to.deep.equal(obj);
     });
 
-    it('should use falsy example', function() {
+    it('should use falsy example', function () {
       schema = {
         type: 'string',
         example: false
@@ -428,7 +404,7 @@ describe('Integration', function() {
       expect(result).to.deep.equal(expected);
     });
 
-    it('should use enum', function() {
+    it('should use enum', function () {
       schema = {
         type: 'string',
         enum: ['test1', 'test2']
@@ -439,8 +415,8 @@ describe('Integration', function() {
     });
   });
 
-  describe('Detection', function() {
-    it('should detect autodetect types based on props', function() {
+  describe('Detection', function () {
+    it('should detect autodetect types based on props', function () {
       schema = {
         properties: {
           a: {
@@ -457,8 +433,8 @@ describe('Integration', function() {
     });
   });
 
-  describe('oneOf and anyOf', function() {
-    it('should support oneOf', function() {
+  describe('oneOf and anyOf', function () {
+    it('should support oneOf', function () {
       schema = {
         oneOf: [
           {
@@ -474,7 +450,7 @@ describe('Integration', function() {
       expect(typeof result).to.equal(expected);
     });
 
-    it('should support anyOf', function() {
+    it('should support anyOf', function () {
       schema = {
         anyOf: [
           {
@@ -490,7 +466,7 @@ describe('Integration', function() {
       expect(typeof result).to.equal(expected);
     });
 
-    it('should prefer oneOf if anyOf and oneOf are on the same level ', function() {
+    it('should prefer oneOf if anyOf and oneOf are on the same level ', function () {
       schema = {
         anyOf: [
           {
@@ -508,8 +484,8 @@ describe('Integration', function() {
     });
   });
 
-  describe('$refs', function() {
-    it('should follow $ref', function() {
+  describe('$refs', function () {
+    it('should follow $ref', function () {
       schema = {
         $ref: '#/defs/Schema'
       };
@@ -529,7 +505,7 @@ describe('Integration', function() {
       expect(typeof result.a).to.equal('string');
     });
 
-    it('should not follow circular $ref', function() {
+    it('should not follow circular $ref', function () {
       schema = {
         $ref: '#/defs/Schema'
       };
@@ -556,7 +532,7 @@ describe('Integration', function() {
       expect(typeof result.a).to.equal('string');
     });
 
-    it('should not follow circular $ref if more than one in properties', function() {
+    it('should not follow circular $ref if more than one in properties', function () {
       schema = {
         $ref: '#/defs/Schema'
       };
@@ -583,7 +559,7 @@ describe('Integration', function() {
       expect(result).to.deep.equal(expected);
     });
 
-    it('should throw if schema has $ref and spec is not provided', function() {
+    it('should throw if schema has $ref and spec is not provided', function () {
       schema = {
         $ref: '#/defs/Schema'
       };
@@ -592,13 +568,13 @@ describe('Integration', function() {
         .throw(/You must provide specification in the third parameter/);
     });
 
-    it('should ignore readOnly params if referenced', function() {
+    it('should ignore readOnly params if referenced', function () {
       schema = {
         type: 'object',
         properties: {
           a: {
             allOf: [
-              { $ref: '#/defs/Prop' }
+              {$ref: '#/defs/Prop'}
             ],
             description: 'prop A'
           },
