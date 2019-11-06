@@ -33,17 +33,6 @@ export function allOfSample(into, children, options, spec) {
         console.warn('OpenAPI Sampler: found allOf with "array" type. Result may be incorrect');
       }
 
-      const typeSet = children.reduce((acc, child) => {
-        if (child.items) {
-          acc.add(child.items.type);
-        }
-        return acc;
-      }, new Set());
-
-      if (typeSet.size !== 1) {
-        throw new Error('Schema has no types or has 2 or more incompatible types');
-      }
-
       const arraySchema = mergeDeep(...children);
       res.value = traverse(arraySchema, options, spec).value;
       break;

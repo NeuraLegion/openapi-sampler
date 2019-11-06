@@ -254,7 +254,7 @@ describe('Integration', function () {
       expect(result.length).to.be.equal(2);
     });
 
-    it('should throw exception because of incompatible types', function () {
+    it('should create an array of strings', function () {
       schema = {
         allOf: [
           {
@@ -272,12 +272,14 @@ describe('Integration', function () {
             'items': {
               'type': 'string'
             },
-            'maxItems': 3
+            'minItems': 3
           }
         ]
       };
+      const result = OpenAPISampler.sample(schema);
 
-      expect(() => console.log(OpenAPISampler.sample(schema))).to.throw();
+      expect(result.length).to.be.equal(3);
+      expect(typeof result[0]).to.be.equal('string');
     });
 
     it('should not be confused by subschema without type', function () {
