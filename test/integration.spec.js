@@ -254,6 +254,32 @@ describe('Integration', function () {
       expect(result.length).to.be.equal(2);
     });
 
+    it('should throw exception because of incompatible types', function () {
+      schema = {
+        allOf: [
+          {
+            'type': 'array',
+            'items': {
+              'type': 'number'
+            }
+          },
+          {
+            'minItems': 2,
+            'maxItems': 3
+          },
+          {
+            'type': 'array',
+            'items': {
+              'type': 'string'
+            },
+            'maxItems': 3
+          }
+        ]
+      };
+
+      expect(() => console.log(OpenAPISampler.sample(schema))).to.throw();
+    });
+
     it('should not be confused by subschema without type', function () {
       schema = {
         'type': 'string',
