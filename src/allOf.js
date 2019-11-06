@@ -1,7 +1,7 @@
 'use strict';
 
 import { traverse } from './traverse';
-import {mergeDeep, nestedTypeLookup} from './utils';
+import { mergeDeep } from './utils';
 
 export function allOfSample(into, children, options, spec) {
   const res = traverse(into, options, spec);
