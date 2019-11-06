@@ -2,7 +2,21 @@
   "parser": "babel-eslint",
   "rules": {
     "strict": 0,
-    "quotes": [2, "single"]
+    "no-unused-vars": [
+      1,
+      {
+        "vars": "all",
+        "args": "none"
+      }
+    ],
+    "quotes": [
+      2,
+      "single",
+      {
+        "avoidEscape": true,
+        "allowTemplateLiterals": true
+      }
+    ]
   },
   "env": {
     "browser": true,

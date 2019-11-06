@@ -22,7 +22,7 @@ export function sampleArray(schema, options = {}, spec) {
 
   for (let i = 0; i < arrayLength; i++) {
     const itemSchema = itemSchemaGetter(i);
-    const {value: sample} = traverse(itemSchema, options, spec);
+    let {value: sample} = traverse(itemSchema, options, spec);
     res.push(sample);
   }
 

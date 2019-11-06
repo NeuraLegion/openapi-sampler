@@ -7,6 +7,8 @@ function pad(number) {
   return number;
 }
 
+const isObject = obj => obj && typeof obj === 'object';
+
 export function toRFCDateTime(date, omitTime, milliseconds) {
   var res = date.getUTCFullYear() +
     '-' + pad(date.getUTCMonth() + 1) +
@@ -31,7 +33,6 @@ export function ensureLength(sample, min, max) {
 }
 
 export function mergeDeep(...objects) {
-  const isObject = obj => obj && typeof obj === 'object';
 
   return objects.reduce((prev, obj) => {
     Object.keys(obj).forEach(key => {
