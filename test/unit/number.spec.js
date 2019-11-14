@@ -2,40 +2,35 @@ import { sampleNumber } from '../../src/samplers/number.js';
 
 describe('sampleNumber', () => {
   let res;
-
-  it('should return any number by default', () => {
+  it('should return number by default', () => {
     res = sampleNumber({});
     expect(typeof res).to.equal('number');
   });
 
   it('should return minimum if minimum is specified', () => {
     res = sampleNumber({minimum: 3});
-    expect(res).to.equal(3);
+    expect(res).to.greaterThan(3);
   });
 
   it('should return minimum +1 for exclusiveMinimum', () => {
     res = sampleNumber({minimum: 3, exclusiveMinimum: true});
-    expect(res).to.equal(4);
+    expect(res > 3).to.equal(true);
   });
 
-  it('should return minimum +1 for exclusiveMinimum', () => {
-    res = sampleNumber({minimum: 3, exclusiveMinimum: true});
-    expect(res).to.equal(4);
-  });
-
-  it('should return maximum if maximum is negative', () => {
+  it('should return number below maximum even if negative', () => {
     res = sampleNumber({maximum: -3});
-    expect(res).to.equal(-3);
+    expect(res <= -3).to.equal(true);
   });
 
-  it('should return maximum -1 if maximum is negative and exclusiveMaximum', () => {
+  it('should return value smaller than maximum and never equal to maximum ', () => {
     res = sampleNumber({maximum: -3, exclusiveMaximum: true});
-    expect(res).to.equal(-4);
+    expect(res < -3).to.equal(true);
   });
 
-  it('should return minimum if both minimum and maximum are specified', () => {
+  it('should return between if both minimum and maximum are specified', () => {
     res = sampleNumber({maximum: 10, minimum: 3});
-    expect(res).to.equal(3);
+    expect(res >= 3).to.equal(true);
+    expect(res <= 10).to.equal(true);
   });
 
   // (2, 3) -> 2.5

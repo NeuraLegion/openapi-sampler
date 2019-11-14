@@ -1,31 +1,30 @@
-const faker = require('faker');
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 export function sampleNumber(schema) {
-  let res;
+  const MAX_VALUE = schema.type && schema.type === 'integer' ?
+    Number.MAX_SAFE_INTEGER : Number.MAX_VALUE;
+  const MIN_VALUE = Number.MIN_SAFE_INTEGER;
 
-  if (schema.maximum && schema.minimum) {
-    res = schema.exclusiveMinimum ? Math.floor(schema.minimum) + 1 : schema.minimum;
-    if (schema.exclusiveMaximum && res >= schema.maximum || !schema.exclusiveMaximum && res > schema.maximum) {
-      res = (schema.maximum + schema.minimum) / 2;
-    }
-    return res;
+  let schemaMin = schema.minimum + !!schema.exclusiveMinimum;
+  let schemaMax = schema.maximum - !!schema.exclusiveMaximum;
+
+  let min = schemaMin ? schemaMin : MIN_VALUE;
+  let max = schemaMax ? schemaMax : MAX_VALUE;
+
+  if (min > max) {
+    [min, max] = [max, min];
   }
 
-  if (schema.minimum) {
-    if (schema.exclusiveMinimum) {
-      return Math.floor(schema.minimum) + 1;
-    } else {
-      return schema.minimum;
-    }
+  if (schema.multipleOf && schema.multipleOf > 0) {
+    min = Math.ceil(min / schema.multipleOf) * schema.multipleOf;
+    max = Math.floor(max / schema.multipleOf) * schema.multipleOf;
   }
 
-  if (schema.maximum) {
-    if (schema.exclusiveMaximum) {
-      return (schema.maximum > 0) ? 0 : Math.floor(schema.maximum) - 1;
-    } else {
-      return (schema.maximum > 0) ? 0 : schema.maximum;
-    }
-  }
-
-  return faker.random.number();
+  return (max - min === 1 && schema.exclusiveMinimum && schema.exclusiveMaximum) ?
+    (max + min) / 2 :
+    getRandomInt(min, max);
 }
