@@ -9,19 +9,14 @@ const MIN_VALUE = Number.MIN_SAFE_INTEGER;
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function format(number, format) {
   switch (format) {
     case 'float':
     case 'double':
-      return parseFloat(number.toFixed(DECIMALS));
-
-    case 'int32':
-    case 'int64':
-      return parseInt(number);
-
+      return number.toFixed(DECIMALS);
     default:
       return number;
   }
@@ -29,10 +24,7 @@ function format(number, format) {
 
 export function sampleNumber(schema) {
   const type = schema.type ? schema.type : 'number';
-  let numberFormat = schema.format;
-  if (!numberFormat) {
-    numberFormat = isInteger(type) ? 'int64' : 'float';
-  }
+  const isInt = isInteger(type);
 
   let schemaMin = schema.minimum && schema.exclusiveMinimum ?
     schema.minimum + 1 :
@@ -50,14 +42,16 @@ export function sampleNumber(schema) {
     max = Math.floor(max / schema.multipleOf) * schema.multipleOf;
   }
 
+  let sampledNumber;
   if (schema.exclusiveMaximum &&
     schema.exclusiveMinimum &&
     Math.abs(min - max) === 1) {
-    if (isInteger(type)) {
+    if (isInt) {
       throw new Error('Invalid min and max boundaries supplied.');
     }
-
-    return format((max + min) / 2, numberFormat);
+    sampledNumber = (max + min) / 2;
+  } else {
+    sampledNumber = getRandomInt(min, max);
   }
-  return format(getRandomInt(min, max), numberFormat);
+  return format(sampledNumber, schema.format);
 }
