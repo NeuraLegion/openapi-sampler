@@ -2,16 +2,37 @@ const isInteger = (type) => {
   return type === 'integer';
 };
 
+const DECIMALS = 2;
+const MAX_VALUE = Number.MAX_SAFE_INTEGER;
+const MIN_VALUE = Number.MIN_SAFE_INTEGER;
+
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function format(number, format) {
+  switch (format) {
+    case 'float':
+    case 'double':
+      return parseFloat(number.toFixed(DECIMALS));
+
+    case 'int32':
+    case 'int64':
+      return parseInt(number);
+
+    default:
+      return number;
+  }
 }
 
 export function sampleNumber(schema) {
   const type = schema.type ? schema.type : 'number';
-  const MAX_VALUE = isInteger(type) ? Number.MAX_SAFE_INTEGER : Number.MAX_VALUE;
-  const MIN_VALUE = isInteger(type) ? Number.MIN_SAFE_INTEGER : -Number.MAX_VALUE;
+  let numberFormat = schema.format;
+  if (!numberFormat) {
+    numberFormat = isInteger(type) ? 'int64' : 'float';
+  }
 
   let schemaMin = schema.minimum && schema.exclusiveMinimum ?
     schema.minimum + 1 :
@@ -35,8 +56,8 @@ export function sampleNumber(schema) {
     if (isInteger(type)) {
       throw new Error('Invalid min and max boundaries supplied.');
     }
-    return (max + min) / 2;
-  }
 
-  return getRandomInt(min, max);
+    return format((max + min) / 2, numberFormat);
+  }
+  return format(getRandomInt(min, max), numberFormat);
 }
