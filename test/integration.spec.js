@@ -440,7 +440,7 @@ describe('Integration', function () {
         enum: enumList
       };
       result = OpenAPISampler.sample(schema);
-      expect(enumList.includes(result)).to.equal(true);
+      expect(result).to.be.oneOf(enumList);
     });
   });
 
@@ -476,7 +476,7 @@ describe('Integration', function () {
       };
       result = OpenAPISampler.sample(schema);
       expected = ['string', 'number'];
-      expect(expected.includes(typeof result)).to.equal(true);
+      expect(typeof result).to.be.oneOf(expected);
     });
 
     it('should support anyOf', function () {
@@ -492,7 +492,7 @@ describe('Integration', function () {
       };
       result = OpenAPISampler.sample(schema);
       expected = ['string', 'number'];
-      expect(expected.includes(typeof result)).to.equal(true);
+      expect(typeof result).to.be.oneOf(expected);
     });
 
     it('should prefer oneOf if anyOf and oneOf are on the same level ', function () {

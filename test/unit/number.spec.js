@@ -9,17 +9,17 @@ describe('sampleNumber', () => {
 
   it('should return minimum if minimum is specified', () => {
     res = sampleNumber({minimum: 3});
-    expect(res).to.greaterThan(3);
+    expect(res).to.be.gte(3);
   });
 
   it('should return minimum +1 for exclusiveMinimum', () => {
     res = sampleNumber({minimum: 3, exclusiveMinimum: true});
-    expect(res > 3).to.equal(true);
+    expect(res).to.be.gt(3);
   });
 
   it('should return number below maximum even if negative', () => {
     res = sampleNumber({maximum: -3});
-    expect(res <= -3).to.equal(true);
+    expect(res).to.be.lte(-3);
   });
 
   it('should return value smaller than maximum and never equal to maximum ', () => {
@@ -29,8 +29,8 @@ describe('sampleNumber', () => {
 
   it('should return between if both minimum and maximum are specified', () => {
     res = sampleNumber({maximum: 10, minimum: 3});
-    expect(res >= 3).to.equal(true);
-    expect(res <= 10).to.equal(true);
+    expect(res).to.be.gte(3);
+    expect(res).to.be.lte(10);
   });
 
   // (2, 3) -> 2.5
