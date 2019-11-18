@@ -432,14 +432,15 @@ describe('Integration', function () {
       expect(result).to.deep.equal(expected);
     });
 
-    it('should use enum', function () {
+
+    it('should use enum', function() {
+      const enumList = ['test1', 'test2'];
       schema = {
         type: 'string',
-        enum: ['test1', 'test2']
+        enum: enumList
       };
       result = OpenAPISampler.sample(schema);
-      expected = 'test1';
-      expect(result).to.equal(expected);
+      expect(result).to.be.oneOf(enumList);
     });
   });
 
@@ -456,7 +457,7 @@ describe('Integration', function () {
         }
       };
       result = OpenAPISampler.sample(schema);
-      expect(result.a).to.deep.equal(10);
+      expect(result.a > 10).to.equal(true);
       expect(typeof result.b).to.equal('string');
     });
   });
@@ -474,8 +475,8 @@ describe('Integration', function () {
         ]
       };
       result = OpenAPISampler.sample(schema);
-      expected = 'string';
-      expect(typeof result).to.equal(expected);
+      expected = ['string', 'number'];
+      expect(typeof result).to.be.oneOf(expected);
     });
 
     it('should support anyOf', function () {
@@ -490,8 +491,8 @@ describe('Integration', function () {
         ]
       };
       result = OpenAPISampler.sample(schema);
-      expected = 'string';
-      expect(typeof result).to.equal(expected);
+      expected = ['string', 'number'];
+      expect(typeof result).to.be.oneOf(expected);
     });
 
     it('should prefer oneOf if anyOf and oneOf are on the same level ', function () {

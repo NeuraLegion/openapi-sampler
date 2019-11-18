@@ -4,6 +4,7 @@ import { _samplers } from './openapi-sampler';
 import { allOfSample } from './allOf';
 import { inferType } from './infer';
 import JsonPointer from 'json-pointer';
+import faker from 'faker';
 
 let $refCache = {};
 
@@ -67,11 +68,11 @@ export function traverse(schema, options, spec) {
       console.warn('oneOf and anyOf are not supported on the same level. Skipping anyOf');
     }
 
-    return traverse(schema.oneOf[0], options, spec);
+    return traverse(faker.random.arrayElement(schema.oneOf), options, spec);
   }
 
   if (schema.anyOf && schema.anyOf.length) {
-    return traverse(schema.anyOf[0], options, spec);
+    return traverse(faker.random.arrayElement(schema.anyOf), options, spec);
   }
 
   let example;
@@ -82,9 +83,9 @@ export function traverse(schema, options, spec) {
   } else if (schema.const !== undefined) {
     example = schema.const;
   } else if (schema.enum && schema.enum.length) {
-    example = schema.enum[0];
+    example = faker.random.arrayElement(schema.enum);
   } else if (schema.examples && schema.examples.length) {
-    example = schema.examples[0];
+    example = faker.random.arrayElement(schema.examples);
   } else {
     type = schema.type;
 

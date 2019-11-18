@@ -1,31 +1,57 @@
-const faker = require('faker');
+const isInteger = (type) => {
+  return type === 'integer';
+};
+
+const DECIMALS = 2;
+const MAX_VALUE = Number.MAX_SAFE_INTEGER;
+const MIN_VALUE = Number.MIN_SAFE_INTEGER;
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function format(number, format) {
+  switch (format) {
+    case 'float':
+    case 'double':
+      return number.toFixed(DECIMALS);
+    default:
+      return number;
+  }
+}
 
 export function sampleNumber(schema) {
-  let res;
+  const type = schema.type ? schema.type : 'number';
+  const isInt = isInteger(type);
 
-  if (schema.maximum && schema.minimum) {
-    res = schema.exclusiveMinimum ? Math.floor(schema.minimum) + 1 : schema.minimum;
-    if (schema.exclusiveMaximum && res >= schema.maximum || !schema.exclusiveMaximum && res > schema.maximum) {
-      res = (schema.maximum + schema.minimum) / 2;
-    }
-    return res;
+  let schemaMin = schema.minimum && schema.exclusiveMinimum ?
+    schema.minimum + 1 :
+    schema.minimum;
+
+  let schemaMax = schema.maximum && schema.exclusiveMaximum ?
+    schema.maximum - 1 :
+    schema.maximum;
+
+  let min = schemaMin ? schemaMin : MIN_VALUE;
+  let max = schemaMax ? schemaMax : MAX_VALUE;
+
+  if (schema.multipleOf && schema.multipleOf > 0) {
+    min = Math.ceil(min / schema.multipleOf) * schema.multipleOf;
+    max = Math.floor(max / schema.multipleOf) * schema.multipleOf;
   }
 
-  if (schema.minimum) {
-    if (schema.exclusiveMinimum) {
-      return Math.floor(schema.minimum) + 1;
-    } else {
-      return schema.minimum;
+  let sampledNumber;
+  if (schema.exclusiveMaximum &&
+    schema.exclusiveMinimum &&
+    Math.abs(min - max) === 1) {
+    if (isInt) {
+      throw new Error('Invalid min and max boundaries supplied.');
     }
+    sampledNumber = (max + min) / 2;
+  } else {
+    sampledNumber = getRandomInt(min, max);
   }
-
-  if (schema.maximum) {
-    if (schema.exclusiveMaximum) {
-      return (schema.maximum > 0) ? 0 : Math.floor(schema.maximum) - 1;
-    } else {
-      return (schema.maximum > 0) ? 0 : schema.maximum;
-    }
-  }
-
-  return faker.random.number();
+  return format(sampledNumber, schema.format);
 }
