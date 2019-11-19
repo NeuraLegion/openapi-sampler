@@ -54,16 +54,16 @@ function uriSample() {
   return faker.internet.url();
 }
 
-function byteSample() {
-  return Buffer.from(faker.lorem.word()).toString('base64');
-}
-
 function binarySample() {
-  return Buffer.from(faker.lorem.word());
+  return toBase64(faker.random.words(3));
 }
 
 function uuidSample() {
   return faker.random.uuid();
+}
+
+function toBase64(data) {
+  return Buffer.from(data).toString('base64');
 }
 
 function patternSample(min, max, pattern) {
@@ -89,8 +89,9 @@ const stringFormats = {
   'ipv6': ipv6Sample,
   'hostname': hostnameSample,
   'uri': uriSample,
-  'byte': byteSample,
+  'byte': binarySample,
   'binary': binarySample,
+  'base64': binarySample,
   'uuid': uuidSample,
   'pattern': patternSample,
   'default': defaultSample
