@@ -69,7 +69,6 @@
     "gulp-rename": "^1.4.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
-    "husky": "^3.1.0",
     "json-loader": "^0.5.7",
     "karma": "^4.1.0",
     "karma-babel-preprocessor": "^8.0.0",
@@ -81,11 +80,12 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-phantomjs-launcher": "^1.0.4",
     "karma-sinon-chai": "^2.0.2",
+    "husky": "^3.1.0",
     "lint-staged": "^9.4.2",
+    "semantic-release": "^15.13.31",
     "lolex": "^4.1.0",
     "mocha": "^6.1.4",
     "phantomjs-prebuilt": "^2.1.16",
-    "semantic-release": "^15.13.31",
     "sinon": "^7.3.2",
     "sinon-chai": "^3.3.0",
     "vinyl-buffer": "^1.0.1",
@@ -95,6 +95,11 @@
     "faker": "^4.1.0",
     "json-pointer": "^0.6.0",
     "randexp": "^0.5.3"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   },
   "husky": {
     "hooks": {

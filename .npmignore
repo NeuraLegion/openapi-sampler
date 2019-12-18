@@ -34,8 +34,7 @@ test
 .github
 
 gulpfile.babel.js
-commitlint.config.js
-release.config.js
+.releaserc
 karma.conf.js
 .eslintrc
 .editorconfig
