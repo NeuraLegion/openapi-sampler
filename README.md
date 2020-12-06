@@ -25,16 +25,16 @@ Tool for generation samples based on OpenAPI payload/response schema
 
 Install using [npm](https://docs.npmjs.com/getting-started/what-is-npm)
 
-    npm install openapi-sampler --save
+    npm install @neuralegion/openapi-sampler --save
 
 or using [yarn](https://yarnpkg.com)
 
-    yarn add openapi-sampler
+    yarn add @neuralegion/openapi-sampler
 
 Then require it in your code:
 
 ```js
-var OpenAPISampler = require('openapi-sampler');
+var OpenAPISampler = require('@neuralegion/openapi-sampler');
 ```
 
 ## Usage
