@@ -4,26 +4,35 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GH_TOKEN }}
+
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-      - run: echo ::set-env name=RELEASE_VERSION::$(echo ${GITHUB_REF:10})
-      - run: npm version $RELEASE_VERSION --git-tag-version false
+
+      - run: echo "VERSION=$(git describe --abbrev=0 --tags)" >> $GITHUB_ENV
+
       - run: npm ci
       - run: npm run build
+
       - run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - uses: actions/setup-node@v1
         with:
           registry-url: 'https://npm.pkg.github.com'
           scope: '@NeuraLegion'
+
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
